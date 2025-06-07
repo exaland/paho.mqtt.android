@@ -236,8 +236,19 @@ class MqttConnection implements MqttCallbackExtended {
 				}
 
 				// use that to setup MQTT client persistence storage
-				persistence = new MqttDefaultFilePersistence(
-						myDir.getAbsolutePath());
+				/**
+    				  -  Android 14: ANR StrictMode DiskReadViolation
+	  		          -  Move Disk Operations Off the Main Thread
+	       		          -  @Author: exaland - Alexandre Magnier		
+				**/
+				new Thread(() -> {
+				    File myDir = service.getExternalFilesDir(TAG);
+				    if (myDir == null) {
+				        myDir = service.getDir(TAG, Context.MODE_PRIVATE);
+				    }
+				    persistence = new MqttDefaultFilePersistence(myDir.getAbsolutePath());
+				}).start();
+			
 			}
 			
 			IMqttActionListener listener = new MqttConnectionListener(

@@ -1,4 +1,25 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.release
+
+            groupId = 'com.exaland.mqtt'
+            artifactId = 'paho-android-service'
+            version = '1.2.6-maintained'
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/exaland/paho.mqtt.android")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME_GITHUB")
+                password = project.findProperty("gpr.key") ?: System.getenv("TOKEN_GITHUB")
+            }
+        }
+    }
+}
 
 buildscript {
     repositories {
